@@ -1,0 +1,102 @@
+.section2 {
+    min-height: 500px;
+    width: 100%;
+    margin: 50px 0 0 0;
+}
+.section2 .content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.section2 .content .card {
+    position: relative;
+    min-height: 300px;
+    margin: 1%;
+    padding: 20px;
+    display: flex;
+    align-items: start;
+    justify-content: end;
+    flex-direction: column;
+    background: url(../images/Pots\ &\ Planters.jpg) no-repeat;
+    background-size: cover;
+}
+.section2 .content .card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(to right, #000, #0000);
+}
+.section2 .content .card.big {
+    width: 48%;
+    min-height: 400px;
+}
+.section2 .content .card.small {
+    width: 31.33%;
+}
+.section2 .content .card.full {
+    width: 99%;
+    min-height: 400px;
+}
+.section2 .content .card h4 {
+    padding: 0 0 10px 0;
+    color: white;
+    z-index: 1;
+}
+.section2 .content .card a {
+    padding: 0.3rem 1.5rem;
+    background: #fff;
+    color: var(--accent-color);
+    z-index: 1;
+    font-size: var(--p--size);
+}
+@media screen and (max-width: 1500px) {
+    .section2 .content .card.big {
+        min-height: 300px;
+    }
+    .section2 .content .card.small {
+        min-height: 230px;
+    }
+    .section2 .content .card.full {
+        min-height: 300px;
+    }
+}
+@media screen and (max-width: 840px) {
+    .section2 .content .card.big {
+        width: 48%;
+        min-height: 250px;
+    }
+    .section2 .content .card.small {
+        width: 48%;
+        min-height: 250px;
+    }
+    .section2 .content .card.full {
+        width: 48%;
+        min-height: 250px;
+    }
+}
+@media screen and (max-width: 720px) {
+    .section2 .content .card.big {
+        width: 100%;
+    }
+    .section2 .content .card.small {
+        width: 100%;
+    }
+    .section2 .content .card.full {
+        width: 100%;
+    }
+}
+@media screen and (max-width: 430px) {
+    .section2 .content .card.big {
+        min-height: 200px;
+    }
+    .section2 .content .card.small {
+        min-height: 200px;
+    }
+    .section2 .content .card.full {
+        min-height: 200px;
+    }
+}
