@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Plant_World.Models;
+using System.Threading.Tasks;
 
 namespace Plant_World.Controllers
 {
@@ -12,9 +14,9 @@ namespace Plant_World.Controllers
             _context = context;
         }
         // GET: CategoryController
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var categories = _context.Categories.ToList();
+            var categories = await _context.Categories.ToListAsync();
             return View(categories);
         }
 
@@ -36,20 +38,41 @@ namespace Plant_World.Controllers
         // POST: CategoryController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Category category)
+        public async Task<IActionResult> Create(Category category, IFormFile? imageFile)
         {
             if (ModelState.IsValid)
             {
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(fileStream);
+                    }
+
+                    category.ImageUrl = "/uploads/" + uniqueFileName;
+                }
+
                 _context.Categories.Add(category);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+                TempData["AlertMessage"] = "Category created successfully!";
+                TempData["AlertType"] = "success";
                 return RedirectToAction(nameof(Index));
             }
+
             return View(category);
         }
+
 
         // GET: CategoryController/Edit/5
         public IActionResult Edit(int id)
         {
+            if(id == null) return NotFound();
             var category = _context.Categories.Find(id);
             if (category == null) return NotFound();
 
@@ -59,14 +82,48 @@ namespace Plant_World.Controllers
         // POST: CategoryController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Category category)
+        public async Task<IActionResult> Edit(int id, Category category, IFormFile? imageFile)
         {
+            var existingCategory = await _context.Categories.FindAsync(id);
+            if (existingCategory == null)
+                return NotFound();
+
             if (ModelState.IsValid)
             {
-                _context.Categories.Update(category);
-                _context.SaveChanges();
+                existingCategory.Name = category.Name;
+                existingCategory.Description = category.Description;
+
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(fileStream);
+                    }
+
+                    if (!string.IsNullOrEmpty(existingCategory.ImageUrl))
+                    {
+                        var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", existingCategory.ImageUrl.TrimStart('/'));
+                        if (System.IO.File.Exists(oldImagePath))
+                            System.IO.File.Delete(oldImagePath);
+                    }
+
+                    existingCategory.ImageUrl = "/uploads/" + uniqueFileName;
+                }
+
+                _context.Categories.Update(existingCategory);
+                await _context.SaveChangesAsync();
+                TempData["AlertMessage"] = "Category updated successfully!";
+                TempData["AlertType"] = "success";
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(category);
         }
 
@@ -89,6 +146,8 @@ namespace Plant_World.Controllers
             {
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
+                TempData["AlertMessage"] = "Category deleted successfully!";
+                TempData["AlertType"] = "danger";
             }
             return RedirectToAction(nameof(Index));
         }
