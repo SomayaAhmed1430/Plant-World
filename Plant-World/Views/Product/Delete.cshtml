@@ -1,0 +1,38 @@
+﻿@model Plant_World.Models.Product
+
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Delete Product";
+}
+
+<h2 class="text-danger mb-4" style="color: red">?! Are You Sure You Want To Delete This Category</h2>
+
+<div class="container mt-5">
+
+    <dl class="row">
+        <dt class="col-sm-3">Name: @Model.Name</dt>
+
+        <dt class="col-sm-3">Description: @Model.Description</dt>
+
+        <dt class="col-sm-3">Price: @Model.Price</dt>
+
+        @if (!string.IsNullOrEmpty(Model.MainImageUrl))
+        {
+            <dt class="col-sm-3">Image: </dt>
+            <dd class="col-sm-9">
+                <img src="@Model.MainImageUrl" alt="@Model.Name" width="120" height="120" class="rounded border" />
+            </dd>
+        }
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Delete
+        </button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">
+            <i class="bi bi-arrow-left"></i> Cancel
+        </a>
+    </form>
+</div>

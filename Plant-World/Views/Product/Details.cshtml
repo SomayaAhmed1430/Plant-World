@@ -1,0 +1,42 @@
+﻿@model Plant_World.Models.Product
+
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Product Details";
+}
+
+<h2 class="mb-4 text-primary">Product Details</h2>
+
+<div class="card shadow-sm p-4" style="max-width: 600px;">
+    <div class="mb-3">
+        <h5 class="fw-bold text-secondary">Category Name:</h5>
+        <p class="form-control-plaintext">@Model.Name</p>
+    </div>
+
+    <div class="mb-3">
+        <h5 class="fw-bold text-secondary">Description:</h5>
+        <p class="form-control-plaintext">@Model.Description</p>
+    </div>
+
+    <div class="mb-3">
+        <h5 class="fw-bold text-secondary">Price:</h5>
+        <p class="form-control-plaintext">@Model.Price LE</p>
+    </div>
+
+    <div class="mb-3">
+        <h5 class="fw-bold text-secondary">Image:</h5>
+        @if (!string.IsNullOrEmpty(Model.MainImageUrl))
+        {
+            <img src="@Model.MainImageUrl" alt="@Model.Name" class="img-fluid rounded shadow-sm" style="height: 150px; width: 300px; margin-bottom: 20px" />
+        }
+        else
+        {
+            <p class="text-muted">No image available.</p>
+        }
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>

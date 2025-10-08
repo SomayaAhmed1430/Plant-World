@@ -1,0 +1,78 @@
+﻿@model Plant_World.ViewModels.ProductFormViewModel
+
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Create Product";
+}
+
+<h2 class="mb-4">Create New Product</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+
+    <!-- Product Name -->
+    <div class="form-group mb-3">
+        <label asp-for="Product.Name" class="form-label"></label>
+        <input asp-for="Product.Name" class="form-control" placeholder="Enter product name" />
+        <span asp-validation-for="Product.Name" class="text-danger"></span>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group mb-3">
+        <label asp-for="Product.Description" class="form-label"></label>
+        <textarea asp-for="Product.Description" class="form-control" placeholder="Enter product description"></textarea>
+        <span asp-validation-for="Product.Description" class="text-danger"></span>
+    </div>
+
+    <!-- Price -->
+    <div class="form-group mb-3">
+        <label asp-for="Product.Price" class="form-label"></label>
+        <input asp-for="Product.Price" class="form-control" placeholder="Enter price" />
+        <span asp-validation-for="Product.Price" class="text-danger"></span>
+    </div>
+
+    <!-- Category Dropdown -->
+    <div class="form-group mb-3">
+        <label asp-for="CategoryId" class="form-label">Category</label>
+        <select asp-for="CategoryId" class="form-control" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+
+    <!-- Main Image Upload -->
+    <div class="form-group mb-3">
+        <label for="mainImageFile" class="form-label">Upload Main Image</label>
+        <input type="file" id="mainImageFile" name="mainImageFile" class="form-control" accept="image/*" />
+    </div>
+
+    <!-- Preview -->
+    <div class="mb-3">
+        <label class="form-label">Preview:</label><br />
+        <img id="preview" src="" alt="Image Preview" style="max-width: 250px; display:none; border:1px solid #ccc; border-radius:8px;" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</form>
+
+@section Scripts {
+    <script>
+        const fileInput = document.getElementById('mainImageFile');
+        const preview = document.getElementById('preview');
+
+        fileInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+        });
+    </script>
+}
